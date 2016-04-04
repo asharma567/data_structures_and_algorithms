@@ -1,6 +1,16 @@
 import numpy as np
 import sys
 
+def inversion_ctr_truth(Arr):
+    output = []
+    for idx, item_1 in enumerate(Arr):
+        for item_2 in Arr[idx + 1:]:
+            if item_1 > item_2:
+                output.append((item_1, item_2))
+            
+    return len(output)
+
+
 def merge(L_Arr, R_Arr, inversion_ctr):
     output_list = []
     
@@ -12,9 +22,9 @@ def merge(L_Arr, R_Arr, inversion_ctr):
         if L_Arr[i] < R_Arr[j]:
             output_list.append(L_Arr[i])
             i += 1
-            inversion_ctr[0] += 1
         else:
             output_list.append(R_Arr[j])
+            inversion_ctr[0] += 1
             j += 1
 
         
@@ -46,9 +56,7 @@ def merge_sort(some_list, inversion_ctr):
 
 if  __name__ == '__main__':
     
-    #this effectively like saving it's like a global parameter 
-    ctr = [0]
-    
+
     #fix it to use arg_parse
     if len(sys.argv) > 1:
         file_name = sys.argv[1]
@@ -57,6 +65,18 @@ if  __name__ == '__main__':
             index_list = [int(line.strip()) for line in f]
             
         print 'file read in..'
+        print inversion_ctr_truth(index_list)
+        ctr = [0]
+        merge_sort(t1, ctr)
+        print ctr
+        
+    else:
+        #this effectively like saving it's like a global parameter 
+        ctr = [0]
+        t1 = [0, 1, 0, 2, 3, 4]
+        t2 = [2, 4, 1, 3, 5]
+        print merge_sort(t1, ctr)
+        print ctr
+        print inversion_ctr_truth(t1)
 
-    merge_sort(index_list, ctr)
-    print ctr
+    
