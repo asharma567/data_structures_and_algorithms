@@ -12,7 +12,8 @@ def inversion_ctr_truth(Arr):
     return len(output)
 
 
-def merge(L_Arr, R_Arr, inversion_ctr):
+def merge(L_Arr, R_Arr):
+    inversion_ctr = 0
     output_list = []
     
     i = 0
@@ -27,21 +28,19 @@ def merge(L_Arr, R_Arr, inversion_ctr):
             i += 1
         else:
             output_list.append(R_Arr[j])
-            inversion_ctr[0] += 1
+            inversion_ctr += len(L_Arr[i:])
             j += 1
 
-        
-    inversion_ctr[0] += len(L_Arr[i:])
     output_list.extend(L_Arr[i:])
     output_list.extend(R_Arr[j:])
 
-    return output_list
+    return output_list, inversion_ctr
 
 
-def merge_sort(some_list, inversion_ctr):
+def merge_sort(some_list):
     
     if len(some_list) < 2:
-        return some_list
+        return some_list, 0
 
     #divide
     mid_point = len(some_list) // 2
@@ -49,13 +48,13 @@ def merge_sort(some_list, inversion_ctr):
     L_Arr = some_list[mid_point:]
 
     #sort
-    R_Arr = merge_sort(R_Arr, inversion_ctr)
-    L_Arr = merge_sort(L_Arr, inversion_ctr)
+    R_Arr, r_ctr = merge_sort(R_Arr)
+    L_Arr, l_ctr = merge_sort(L_Arr)
 
     #merge
-    lis = merge(R_Arr, L_Arr, inversion_ctr)
+    lis, split_ctr = merge(R_Arr, L_Arr)
     
-    return lis
+    return lis, r_ctr + l_ctr + split_ctr
 
 if  __name__ == '__main__':
     
@@ -69,21 +68,21 @@ if  __name__ == '__main__':
             index_list = [int(line.strip()) for line in f]
             
         print 'file read in..'
-        print inversion_ctr_truth(index_list)
-        ctr = [0]
-        merge_sort(t1, ctr)
-        print ctr
+        # print inversion_ctr_truth(index_list)
+        print merge_sort(index_list)
+
         
     else:
         #this effectively like saving it's like a global parameter 
         ctr = [0]
         t1 = [0, 1, 5, 2, 3, 4]
         t2 = [2, 4, 1, 3, 5]
-        n = range(5)[::-1]
+        n = range(10)[::-1]
         
         print 'n:', len(n), 'total number of inversions: ', len(list(combinations(n, 2)))
-        print merge_sort(n, ctr)
-        print ctr
+        _, inversions = merge_sort(n)
+        print inversions    
+
         print inversion_ctr_truth(n)
 
     
